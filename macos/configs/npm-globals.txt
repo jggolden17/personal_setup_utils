@@ -1,0 +1,5 @@
+artillery
+corepack
+firebase-tools
+wscat
+wscatverbose

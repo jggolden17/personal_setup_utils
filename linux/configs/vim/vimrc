@@ -1,0 +1,43 @@
+" Disable vi compatibility mode (enables Vim-specific features)
+set nocp
+
+" Enable loading of filetype-specific plugins
+filetype plugin on
+
+" Allow switching buffers without saving current changes
+set hidden
+
+" Show line numbers, relative to cursor position
+set number relativenumber
+
+" Highlight search matches as you type
+set incsearch
+
+" Keep search matches highlighted after search completes
+set hlsearch
+
+" ; → : (skip shift for command mode)
+nnoremap ; :
+
+" Disable arrow keys (normal mode)
+nnoremap <Up> <Nop>
+nnoremap <Down> <Nop>
+nnoremap <Left> <Nop>
+nnoremap <Right> <Nop>
+
+" Disable arrow keys (insert mode)
+inoremap <Up> <Nop>
+inoremap <Down> <Nop>
+inoremap <Left> <Nop>
+inoremap <Right> <Nop>
+
+" Ctrl-hjkl for window navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" H/L for start/end of line (overrides default screen-jump behavior)
+nnoremap H ^
+nnoremap L $
+

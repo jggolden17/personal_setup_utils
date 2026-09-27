@@ -1,0 +1,31 @@
+source "$HOME/.config/shell/common.sh"
+
+# gcloud CLI completion
+if [ -f "/usr/share/google-cloud-sdk/completion.bash.inc" ]; then
+  . "/usr/share/google-cloud-sdk/completion.bash.inc"
+fi
+
+### History: size, file, and sane options
+shopt -s histappend
+HISTFILE=~/.bash_history
+HISTSIZE=100000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth:erasedups
+PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+
+### Completion
+[ -f /usr/share/bash-completion/bash_completion ] && source /usr/share/bash-completion/bash_completion
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+### fzf
+# Ubuntu 24.04's fzf ships key-bindings/completion as separate files rather
+# than the newer `fzf --bash` flag (added upstream in fzf 0.48) — verify at
+# install time and switch to `eval "$(fzf --bash)"` if the apt version has it.
+[ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && source /usr/share/doc/fzf/examples/key-bindings.bash
+[ -f /usr/share/doc/fzf/examples/completion.bash ] && source /usr/share/doc/fzf/examples/completion.bash
+
+### zoxide, starship, direnv, pyenv
+eval "$(zoxide init bash)"
+eval "$(direnv hook bash)"
+eval "$(pyenv init - bash)"
+eval "$(starship init bash)"

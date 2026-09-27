@@ -1,0 +1,19 @@
+# Working notes, not part of the public snapshot
+rough_working/
+plans/
+
+# Never-commit: local secrets, auth, and machine-specific state
+.claude.json
+**/.claude/settings.local.json
+.aws/
+.boto
+.config/gcloud/
+.docker/config.json
+.ssh/
+*_history
+.zsh_history
+.bash_history
+settings.local.json
+auth.toml
+
+.DS_Store

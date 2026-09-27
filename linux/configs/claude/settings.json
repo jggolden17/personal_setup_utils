@@ -1,0 +1,30 @@
+{
+  "model": "sonnet",
+  "hooks": {
+    "Notification": [
+      { "hooks": [{ "type": "command", "command": "notify-send 'Claude Code' 'Needs your input'" }] }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
+  "outputStyle": "Explanatory",
+  "viewMode": "verbose",
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "medium"
+    }
+  },
+  "advisorModel": "opus",
+  "emojiCompletionEnabled": false,
+  "showClearContextOnPlanAccept": true,
+  "plansDirectory": "./plans",
+  "theme": "auto",
+  "preferredNotifChannel": "auto",
+  "teammateMode": "in-process",
+  "inputNeededNotifEnabled": true,
+  "autoConnectIde": false,
+  "diffTool": "terminal",
+  "externalEditorContext": true
+}

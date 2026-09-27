@@ -1,0 +1,16 @@
+# <repo path>|<destination>
+# Destinations use a literal "$HOME" token, expanded by setup.sh/snapshot.sh (never eval'd).
+configs/shell/bash_profile|$HOME/.bash_profile
+configs/shell/bashrc|$HOME/.bashrc
+configs/shell/inputrc|$HOME/.inputrc
+configs/shell/common.sh|$HOME/.config/shell/common.sh
+configs/git/gitconfig|$HOME/.gitconfig
+configs/git/ignore|$HOME/.config/git/ignore
+configs/vim/vimrc|$HOME/.vimrc
+configs/nvim/init.lua|$HOME/.config/nvim/init.lua
+configs/tmux/tmux.conf|$HOME/.tmux.conf
+configs/starship/starship.toml|$HOME/.config/starship.toml
+configs/claude/settings.json|$HOME/.claude/settings.json
+configs/claude/statusline.sh|$HOME/.claude/statusline.sh
+configs/vscode/settings.json|$HOME/.config/Code/User/settings.json
+configs/vscode/keybindings.json|$HOME/.config/Code/User/keybindings.json

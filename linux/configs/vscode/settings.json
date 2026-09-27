@@ -1,0 +1,43 @@
+{
+  // ─── editor ───
+  "editor.renderWhitespace": "none",
+  "editor.formatOnSave": true,
+  "diffEditor.renderSideBySide": true,
+  "diffEditor.ignoreTrimWhitespace": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  // ─── per-language formatters (no global default; see below) ───
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "[javascript][typescript][json][jsonc][css][svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+  },
+  "svelte.enable-ts-plugin": true,
+
+  // ─── jupyter / docker ───
+  "jupyter.askForKernelRestart": false,
+  "docker.extension.dockerEngineAvailabilityPrompt": false,
+
+  // ─── json schema trust ───
+  "json.schemaDownload.trustedDomains": {
+    "https://schemastore.azurewebsites.net/": true,
+    "https://raw.githubusercontent.com/microsoft/vscode/": true,
+    "https://raw.githubusercontent.com/devcontainers/spec/": true,
+    "https://www.schemastore.org/": true,
+    "https://json.schemastore.org/": true,
+    "https://json-schema.org/": true,
+    "https://developer.microsoft.com/json-schemas/": true,
+    "https://biomejs.dev": true
+  },
+
+  // ─── claude code ───
+  "claudeCode.hideOnboarding": true,
+  "claudeCode.preferredLocation": "panel"
+}

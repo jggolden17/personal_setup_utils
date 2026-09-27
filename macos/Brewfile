@@ -1,0 +1,251 @@
+# ───────────────────────────────────────────────────────────────
+# ─── Apps ───
+# ───────────────────────────────────────────────────────────────
+
+# ─── editors ───
+brew "vim"
+brew "neovim"
+cask "visual-studio-code"
+cask "dbeaver-community"
+
+# ─── programming ───
+cask "docker-desktop"
+brew "git"
+brew "gh"
+cask "github"
+tap "hashicorp/tap"
+brew "hashicorp/tap/terraform"
+brew "kubectl"
+
+# ─── cloud ───
+# `gcloud` CLI
+cask "gcloud-cli"
+brew "oci-cli"
+# TODO: oracle cloud
+
+# ─── ai ───
+cask "claude"
+# CLI
+cask "claude-code"
+
+# ─── browsers & google ───  
+cask "firefox"
+cask "google-chrome"
+cask "google-drive"
+
+# ─── general ───
+cask "slack"
+cask "zoom"
+cask "obsidian"
+cask "spotify"
+cask "whatsapp"
+cask "todoist-app"
+
+# ─────────────────────────────────────────────────────────────── 
+# ─── Terminal ───
+# ───────────────────────────────────────────────────────────────
+
+# ─── core terminal ───
+# Terminal multiplexer
+brew "tmux"
+# Terminal emulator, nicer than macOS Terminal.app
+cask "iterm2"
+
+# ─── replacements for std tools ───
+# Smarter `cd` - jumps to frequently/recently used directories by partial name
+brew "zoxide"
+# Fast, user-friendly `find` replacement
+brew "fd"
+# Fuzzy finder - powers Ctrl-R history search, file search, and many vim/tmux plugins
+brew "fzf"
+# Fast grep replacement, used internally by fzf and many editor plugins
+brew "ripgrep"
+# `cat` with syntax highlighting and git integration
+brew "bat"
+# Modern `ls` replacement - icons, git status, tree view
+brew "eza"
+# Interactive process/resource viewer (nicer htop)
+brew "btop"
+
+# ─── look and feel ───
+# Cross-shell prompt showing git branch, venv, exit status, etc.
+brew "starship"
+
+# ─── db ───
+# Object-relational database system
+brew "postgresql@18"
+# run a local mongodb 
+tap "mongodb/brew"
+brew "mongodb-community"
+
+# ─── git ─── 
+# Quickly rewrite git repository history
+brew "git-filter-repo"
+# Git extension for versioning large files
+brew "git-lfs"
+# Much more readable git diffs (side-by-side, syntax highlighted)
+brew "git-delta"
+# Terminal UI for git - stage, commit, branch, rebase visually
+brew "lazygit"
+
+# ─── utils ───
+# Auto-loads/unloads env vars when you cd into a directory - good for per-project secrets/config
+brew "direnv"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Same as jq but for YAML
+brew "yq"
+# 1Password CLI - pull secrets into shell/scripts without hardcoding them
+cask "1password-cli"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# Command-line client for WebSockets
+brew "websocat"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@3"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Tools and libraries to manipulate images in select formats
+brew "imagemagick"
+
+# ─── zsh ───
+# Fish-like fast/unobtrusive autosuggestions for zsh
+brew "zsh-autosuggestions"
+# Additional completion definitions for zsh
+brew "zsh-completions"
+# Fish shell like syntax highlighting for zsh
+brew "zsh-syntax-highlighting"
+
+# ─── bash ───
+# A newer bash than the one macOS ships, made the default login shell
+brew "bash"
+# Tab-completion for bash commands and flags
+brew "bash-completion@2"
+# Lint/static-analysis for shell scripts
+brew "shellcheck"
+
+# ─────────────────────────────────────────────────────────────── 
+# ─── System / keyboard ───
+# ───────────────────────────────────────────────────────────────
+
+# Keyboard remapping - caps-lock to esc, fn/cmd swap
+cask "karabiner-elements"
+# Window snapping/tiling via keyboard shortcuts
+cask "rectangle"
+# Spotlight replacement - fast app launcher, clipboard history, extensions
+cask "raycast"
+
+# ─────────────────────────────────────────────────────────────── 
+# ─── Python ───
+# ───────────────────────────────────────────────────────────────
+# Python version management
+brew "pyenv"
+brew "poetry"
+# pyenv build deps, otherwise a built Python can lack lzma/tkinter
+brew "readline"
+brew "xz"
+brew "tcl-tk@8"
+brew "sqlite"
+brew "zlib"
+
+# ───────────────────────────────────────────────────────────────
+# ─── nodejs ───
+# ───────────────────────────────────────────────────────────────
+
+# Node itself comes from nvm (curl-installed by setup.sh), not brew: nvm's
+# README says brew installs are unsupported. Global npm packages live in
+# configs/npm-globals.txt and are installed by setup.sh after nvm runs,
+# since `brew bundle` would try to run these npm lines before node exists.
+
+# ─────────────────────────────────────────────────────────────── 
+# ─── VS Code extensions ───
+# ───────────────────────────────────────────────────────────────
+# ─── ai assistants ───
+vscode "anthropic.claude-code"
+#   Official Anthropic extension that brings Claude Code (an agentic AI coder) into VS Code.
+#   Lets Claude read/edit your code, run terminal commands, show inline diffs, and review plans before applying.
+
+# ─── python tooling (core) + linting + formatting + type checking) ───
+vscode "ms-python.python"
+#   Official Python extension: language support, interpreter management, debugging, testing, Jupyter integration.
+vscode "ms-python.vscode-pylance"
+#   Fast Python language server (from Microsoft) for IntelliSense, type inference, go-to-definition, etc.
+vscode "ms-python.vscode-python-envs"
+#   Helps manage Python environments (venv, conda, etc.) and switch interpreters more easily.
+vscode "ms-python.debugpy"
+#   Debugger backend used by the Python extension for running and stepping through Python code.
+
+# ─── python tooling (linting + formatting + type checking) ───
+vscode "charliermarsh.ruff"
+#   Integration for Ruff: extremely fast Python linter + formatter that can replace Flake8, isort, Black, pyupgrade, etc.
+# vscode "ms-python.black-formatter"
+#   Runs Black (Python formatter) inside VS Code.
+#   Redundant if you use Ruff as your formatter
+# vscode "ms-python.flake8"
+#   Runs Flake8 (Python linter) inside VS Code.
+#   Redundant if you use Ruff as your linter
+# vscode "ms-python.pylint"
+#   Runs Pylint (another Python linter) inside VS Code.
+#   Usually redundant with Ruff or Flake8
+vscode "ms-python.mypy-type-checker"
+#   Runs mypy (static type checker) inside VS Code.
+vscode "njpwerner.autodocstring"
+#   Automatically generates Python docstring templates when you type triple quotes after a function/method.
+
+# ─── javascript / typescript / web tooling ───
+vscode "dbaeumer.vscode-eslint"
+#   ESLint integration for JavaScript/TypeScript: linting, quick fixes, format-on-save integration.
+#   Keep if your JS/TS projects use ESLint; otherwise optional.
+
+vscode "esbenp.prettier-vscode"
+#   Prettier formatter for JS/TS, JSON, CSS, etc. Formats code on save or on demand.
+#   Very common; keep if your projects use Prettier.
+
+vscode "stylelint.vscode-stylelint"
+#   Stylelint integration for CSS/SCSS/etc.: linting styles with rules and auto-fixes.
+#   Keep if your project uses Stylelint; otherwise optional.
+
+vscode "bradlc.vscode-tailwindcss"
+#   Tailwind CSS IntelliSense: autocomplete, class-name validation, hover previews, etc.
+#   Keep if you use Tailwind CSS; otherwise remove.
+
+vscode "svelte.svelte-vscode"
+#   Language support for Svelte: syntax highlighting, IntelliSense, linting, formatting.
+#   Keep only if you develop in Svelte.
+
+vscode "prisma.prisma"
+#   Language support for Prisma schema files (database ORM for Node/TS).
+#   Keep only if you use Prisma in your projects.
+
+# ─── markdown / docs / diagrams ───
+vscode "bierner.markdown-mermaid"
+#   Renders Mermaid diagrams inside Markdown preview (flowcharts, sequence diagrams, etc.).
+#   Keep if you write Markdown with Mermaid diagrams; otherwise optional.
+
+# ─── sql formatting ───
+vscode "inferrinizzard.prettier-sql-vscode"
+#   Prettier-based SQL formatter: formats SQL files on save or on demand.
+#   Keep if you edit SQL files and want auto-formatting; otherwise optional.
+
+# ─── azure / containers / docker / bicep ───
+vscode "docker.docker"
+#   Official Docker extension 
+
+# ─── git / repo tooling ───
+vscode "eamodio.gitlens"
+#   Advanced Git integration: blame annotations, history, compare branches, rich commit insights.
+
+# ─── jupyter / notebooks ───
+vscode "ms-toolsai.jupyter"
+#   Core Jupyter support: run notebooks, interactive windows, variable explorer, plots.
+
+vscode "ms-toolsai.jupyter-keymap"
+#   Adds Jupyter-style keyboard shortcuts to VS Code notebooks.
+
+# vscode "ms-toolsai.jupyter-renderers"
+#   Extra renderers for notebook outputs (e.g., vegalite, plotly, etc.).
+
+vscode "vscodevim.vim"
+#   Vim keybindings inside VS Code.
+vscode "editorconfig.editorconfig"
+#   Applies .editorconfig file settings (indent size, line endings, etc.) per project.

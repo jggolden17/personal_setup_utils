@@ -1,0 +1,212 @@
+# ───────────────────────────────────────────────────────────────
+
+# ─── Apps ───
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── editors ───
+
+apt vim
+apt neovim
+deb visual-studio-code # Microsoft's .deb, not the snap (startup/sandboxing); one-off download, no ongoing apt repo
+deb dbeaver-community # DBeaver's official .deb; one-off download, no ongoing apt repo
+
+# ─── programming ───
+
+repo docker-ce # Docker's official apt repo
+apt docker-ce
+apt docker-ce-cli
+apt containerd.io
+apt docker-buildx-plugin
+apt docker-compose-plugin # Docker's official repo; Engine + Compose, not Docker Desktop (no VM/GUI layer needed - Linux already has the kernel)
+apt git
+repo gh # GitHub CLI's own apt repo
+apt gh
+
+# github (GitHub Desktop) — no maintained Linux build, dropped. See README.
+
+repo terraform # HashiCorp's apt repo
+apt terraform
+repo kubectl # pkgs.k8s.io
+apt kubectl
+
+# ─── cloud ───
+
+repo google-cloud-cli # Google's apt repo
+apt google-cloud-cli
+script oci-cli # Oracle's official installer script
+
+# ─── ai ───
+
+# claude (desktop app) — no official Linux build, dropped. Use claude.ai in browser. See README.
+
+script claude-code # official installer (or: npm install -g @anthropic-ai/claude-code)
+
+# ─── browsers & google ───
+
+repo firefox # Mozilla's official apt repo, not Ubuntu 24.04's default snap
+apt firefox
+deb google-chrome # Google's .deb (one-off download, no ongoing apt repo)
+
+# google-drive — no official Linux client, dropped. See README (rclone mount as an option).
+
+# ─── general ───
+
+deb slack # official .deb
+deb zoom # official .deb
+deb obsidian # official .deb
+repo spotify # Spotify's official apt repo
+apt spotify-client
+deb todoist-app # official .deb if offered, else snap
+
+# whatsapp — no official Linux desktop client, dropped. Use web.whatsapp.com. See README.
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── Terminal ───
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── core terminal ───
+
+apt tmux
+
+# gnome-terminal is preinstalled on Ubuntu 24.04 — nothing to install
+
+# ─── replacements for std tools ───
+
+apt zoxide
+apt fd-find # binary installs as `fdfind`, aliased to `fd` in common.sh
+apt fzf
+apt ripgrep
+apt bat # binary installs as `batcat`, aliased to `cat` in common.sh
+repo eza # eza's own apt repo, not in Ubuntu's default repos
+apt eza
+apt btop
+
+# ─── look and feel ───
+
+script starship # starship.rs/install.sh, no apt package
+
+# ─── db ───
+
+repo postgresql # PGDG repo, current major version (matches postgresql@18 intent)
+apt postgresql-18 # verify major version number against PGDG's current release at install time
+repo mongodb-org # MongoDB's official apt repo
+apt mongodb-org
+
+# ─── git ───
+
+apt git-filter-repo
+apt git-lfs
+binary git-delta # no apt package; install the .deb release from GitHub
+binary lazygit # no apt package; install the latest GitHub release binary (per lazygit's own README)
+
+# ─── utils ───
+
+apt direnv
+apt jq
+binary yq # Ubuntu's `yq` apt package is the unrelated python kislyuk/yq; install the Go mikefarah/yq binary release instead
+repo 1password
+apt 1password
+repo 1password-cli
+apt 1password-cli
+apt tree
+binary websocat # no apt package; install the GitHub release binary
+apt openssl
+apt ffmpeg
+apt imagemagick
+
+# ─── bash ───
+
+# Ubuntu's stock /bin/bash is already current — no separate bash install/chsh needed
+
+apt bash-completion
+apt shellcheck
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── System / keyboard ───
+
+# ───────────────────────────────────────────────────────────────
+
+repo keyd # ppa:keyd-team/ppa — caps-lock/esc only, fn/cmd swap doesn't translate. See README.
+apt keyd
+apt gnome-shell-extension-manager # to install the "Tiling Assistant" extension (Rectangle-style quarter-tiling)
+repo ulauncher # Ulauncher's own PPA — closest match to Raycast
+apt ulauncher
+
+# clipboard tools tmux/nvim need for copy-mode / unnamedplus
+
+apt wl-clipboard
+apt xclip
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── Python ───
+
+# ───────────────────────────────────────────────────────────────
+
+script pyenv # pyenv.run, no apt package
+script poetry # install.python-poetry.org, no apt package
+
+# pyenv build deps, otherwise a built Python can lack lzma/tkinter
+
+apt libreadline-dev
+apt liblzma-dev
+apt tk-dev
+apt libsqlite3-dev
+apt zlib1g-dev
+apt libssl-dev
+apt libbz2-dev
+apt libffi-dev
+apt build-essential
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── nodejs ───
+
+# ───────────────────────────────────────────────────────────────
+
+# Node itself comes from nvm (curl-installed by setup.sh), not apt. Global npm
+
+# packages live in configs/npm-globals.txt and are installed by setup.sh after
+
+# nvm runs, same as macos/setup.sh.
+
+# ───────────────────────────────────────────────────────────────
+
+# ─── VS Code extensions ───
+
+# ───────────────────────────────────────────────────────────────
+
+# Same list as macos/Brewfile's `vscode "..."` lines — none are macOS-specific
+
+# (confirmed by reading the full list). setup.sh installs each via
+
+# `code --install-extension <id>` in a loop; see macos/Brewfile for the full
+
+# annotated list this mirrors.
+
+vscode anthropic.claude-code
+vscode ms-python.python
+vscode ms-python.vscode-pylance
+vscode ms-python.vscode-python-envs
+vscode ms-python.debugpy
+vscode charliermarsh.ruff
+vscode ms-python.mypy-type-checker
+vscode njpwerner.autodocstring
+vscode dbaeumer.vscode-eslint
+vscode esbenp.prettier-vscode
+vscode stylelint.vscode-stylelint
+vscode bradlc.vscode-tailwindcss
+vscode svelte.svelte-vscode
+vscode prisma.prisma
+vscode bierner.markdown-mermaid
+vscode inferrinizzard.prettier-sql-vscode
+vscode docker.docker
+vscode eamodio.gitlens
+vscode ms-toolsai.jupyter
+vscode ms-toolsai.jupyter-keymap
+vscode vscodevim.vim
+vscode editorconfig.editorconfig

@@ -1,0 +1,13 @@
+# Up/Down: search history using what's already typed as a prefix
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Option-Left / Option-Right: move by word (terminal-dependent escape sequence,
+# both bound since it varies)
+"\e\e[D": backward-word
+"\e\e[C": forward-word
+"\e[1;3D": backward-word
+"\e[1;3C": forward-word
+
+# Case-insensitive tab completion
+set completion-ignore-case on

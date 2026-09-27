@@ -1,0 +1,63 @@
+HOMEBREW_PREFIX="$(brew --prefix 2>/dev/null || echo /opt/homebrew)"
+
+source "$HOME/.config/shell/common.sh"
+
+# gcloud CLI completion
+if [ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc" ]; then
+  . "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
+fi
+
+eval "$(pyenv init - zsh)"
+
+### History: size, file, and sane options
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt INC_APPEND_HISTORY      # write commands as they're entered
+setopt SHARE_HISTORY           # share history across sessions
+setopt HIST_IGNORE_ALL_DUPS    # drop older duplicates
+setopt HIST_REDUCE_BLANKS      # strip extra spaces
+setopt EXTENDED_HISTORY        # timestamps
+
+### zsh-completions (extra completions) — must load before compinit
+fpath=("$HOMEBREW_PREFIX/share/zsh-completions" $fpath)
+
+### Completion system
+autoload -Uz compinit
+# Speed up compinit by caching and skipping security checks (safe on a single-user Mac)
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit -C
+else
+  compinit
+fi
+zstyle ':completion:*' menu select   # arrow-key menus for completion
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|[._-]=* r:|=*'  # smarter fuzzy-ish matching
+
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+### fzf: history/file/dir search keybindings
+[[ -f "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh" ]] && source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
+[[ -f "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"   ]] && source "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
+
+### zoxide: smarter cd
+eval "$(zoxide init zsh)"   # use `z foo` to jump by frecency
+
+### Autosuggestions and syntax highlighting
+# order matters: source autosuggestions before highlighting
+if [[ -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+if [[ -r "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+### Helpful keybindings (fallbacks if fzf isn't loaded)
+# Incremental history search on Ctrl-R if fzf isn't available
+if ! zle -l | grep -q fzf-history-widget; then
+  bindkey '^R' history-incremental-search-backward
+fi
+# Up/Down search current prefix through history
+bindkey '^[[A' history-beginning-search-backward   # Up
+bindkey '^[[B' history-beginning-search-forward    # Down
+
+eval "$(starship init zsh)"

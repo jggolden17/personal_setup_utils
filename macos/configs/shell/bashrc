@@ -1,0 +1,29 @@
+HOMEBREW_PREFIX="$(brew --prefix 2>/dev/null || echo /opt/homebrew)"
+
+source "$HOME/.config/shell/common.sh"
+
+# gcloud CLI completion
+if [ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.bash.inc" ]; then
+  . "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.bash.inc"
+fi
+
+### History: size, file, and sane options
+shopt -s histappend
+HISTFILE=~/.bash_history
+HISTSIZE=100000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth:erasedups
+PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+
+### Completion
+[ -f "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ] && source "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+### fzf
+eval "$(fzf --bash)"
+
+### zoxide, starship, direnv, pyenv
+eval "$(zoxide init bash)"
+eval "$(direnv hook bash)"
+eval "$(pyenv init - bash)"
+eval "$(starship init bash)"

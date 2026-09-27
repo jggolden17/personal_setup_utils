@@ -1,0 +1,57 @@
+{
+  "model": "sonnet",
+  "hooks": {
+    "Notification": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "PermissionRequest": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "PostToolUse": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "PreToolUse": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "SessionEnd": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "StopFailure": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "SubagentStop": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "~/.config/iterm2/cc-status" }] }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
+  "outputStyle": "Explanatory",
+  "viewMode": "verbose",
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "medium"
+    }
+  },
+  "advisorModel": "opus",
+  "emojiCompletionEnabled": false,
+  "showClearContextOnPlanAccept": true,
+  "plansDirectory": "./plans",
+  "theme": "auto",
+  "preferredNotifChannel": "auto",
+  "teammateMode": "in-process",
+  "inputNeededNotifEnabled": true,
+  "autoConnectIde": false,
+  "diffTool": "terminal",
+  "externalEditorContext": true
+}

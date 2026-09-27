@@ -1,0 +1,27 @@
+{
+  "profiles": [
+    {
+      "name": "Default",
+      "selected": true,
+      "simple_modifications": [
+        {
+          "from": { "key_code": "caps_lock" },
+          "to": [{ "key_code": "escape" }]
+        },
+        {
+          "from": { "key_code": "fn" },
+          "to": [{ "key_code": "left_command" }]
+        },
+        {
+          "from": { "key_code": "left_command" },
+          "to": [{ "key_code": "fn" }]
+        }
+      ],
+      "complex_modifications": {
+        "parameters": {},
+        "rules": []
+      },
+      "devices": []
+    }
+  ]
+}

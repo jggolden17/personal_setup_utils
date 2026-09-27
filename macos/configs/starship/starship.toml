@@ -1,0 +1,38 @@
+# Prompt format - order modules appear in
+format = """
+$directory\
+$git_branch\
+$fill\
+$cmd_duration\
+$time
+$character"""
+
+# Add a blank line between prompts
+add_newline = true
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "cyan bold"
+
+[git_branch]
+style = "purple bold"
+format = "on [$branch]($style) "
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration]($style) "
+style = "yellow"
+
+[time]
+disabled = false
+format = "$time "
+time_format = "%H:%M"
+style = "bright-black"
+
+[fill]
+symbol = " "
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
