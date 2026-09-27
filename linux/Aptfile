@@ -55,10 +55,11 @@ deb google-chrome # Google's .deb (one-off download, no ongoing apt repo)
 deb slack # official .deb
 deb zoom # official .deb
 deb obsidian # official .deb
-repo spotify # Spotify's official apt repo
-apt spotify-client
 deb todoist-app # official .deb if offered, else snap
 
+# spotify — official apt repo dropped: frequent signing-key rotation and
+# release-support lag caused repeated setup failures. Use the web player or
+# flatpak/snap instead.
 # whatsapp — no official Linux desktop client, dropped. Use web.whatsapp.com. See README.
 
 # ───────────────────────────────────────────────────────────────
@@ -92,8 +93,9 @@ script starship # starship.rs/install.sh, no apt package
 
 repo postgresql # PGDG repo, current major version (matches postgresql@18 intent)
 apt postgresql-18 # verify major version number against PGDG's current release at install time
-repo mongodb-org # MongoDB's official apt repo
-apt mongodb-org
+
+# mongodb-org — official apt repo dropped: lags LTS support (e.g. 7.0 has no
+# noble build) and caused repeated setup failures. Install manually if needed.
 
 # ─── git ───
 

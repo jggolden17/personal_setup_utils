@@ -8,9 +8,8 @@ doesn't translate 1:1 from the macOS version.
 
 Unlike macOS, there's no package manager to bootstrap — apt ships with
 Ubuntu. `linux/setup.sh` adds the vendor apt repos it needs (GitHub CLI,
-Docker, HashiCorp, Kubernetes, Google Cloud, 1Password, MongoDB, PGDG, eza,
-keyd, Ulauncher, Spotify, Mozilla) itself, idempotently, before installing
-anything.
+Docker, HashiCorp, Kubernetes, Google Cloud, 1Password, PGDG, eza, keyd,
+Ulauncher, Mozilla) itself, idempotently, before installing anything.
 
 ## 2. Configure github
 
@@ -31,10 +30,17 @@ Set up personal profile. Log into github on this machine.
 Ubuntu's `git` package is current enough; no separate install step needed
 beyond what `linux/Aptfile` installs.
 
-Generate a new SSH key for this machine:
+Install git, and quick tool for copying:
 
 ```sh
-KEY_LABEL="your-email@example.com"  # replace with the email you want on the key
+sudo apt install git
+sudo apt install xclip
+```
+
+Generate a new SSH key for this machine, with some identifier for this key locally and on GitHub:
+
+```sh
+KEY_LABEL="your_key_label
 ssh-keygen -t ed25519 -C "$KEY_LABEL"
 ```
 

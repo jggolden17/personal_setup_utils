@@ -18,6 +18,11 @@ exactly where each of these is handled.
   option for filesystem-level access, left as a manual/optional step rather
   than installing a third-party sync client unasked.
 - **WhatsApp** — no official Linux desktop client. Use web.whatsapp.com.
+- **Spotify and MongoDB apt repos** — dropped, not for lack of a Linux build,
+  but because both repeatedly broke setup: Spotify rotates its signing key
+  without notice (`NO_PUBKEY` failures), and MongoDB's repo lags Ubuntu LTS
+  support (e.g. 7.0 has no `noble` build). Use Spotify's web player or a
+  flatpak/snap, and install MongoDB manually if/when needed.
 - **Karabiner's fn/cmd swap** — `keyd` covers the caps-lock → escape mapping,
   but PC keyboards don't expose `fn` as an OS-visible key at all (it's
   intercepted in firmware before the OS ever sees it), so there's nothing for
@@ -63,8 +68,8 @@ exactly where each of these is handled.
 - **Package names/repo URLs in `Aptfile`/`setup.sh` are unverified** — this
   was written without a Linux box to test against. The apt package names,
   PPA names, and GPG-key URLs for the vendor repos (Docker, gh, HashiCorp,
-  Kubernetes, Google Cloud, 1Password, MongoDB, PGDG, eza, keyd, Ulauncher,
-  Spotify, Mozilla) and the direct `.deb`/binary URLs (VS Code, Chrome,
+  Kubernetes, Google Cloud, 1Password, PGDG, eza, keyd, Ulauncher, Mozilla)
+  and the direct `.deb`/binary URLs (VS Code, Chrome,
   Slack, Zoom, Obsidian, DBeaver, Todoist, lazygit, git-delta, yq, websocat)
   are correct as of when this was written, but package versions and URLs
   drift — expect to fix a handful of these on first real run.

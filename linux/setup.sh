@@ -16,8 +16,36 @@ done
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.config_backup/$(date +%Y%m%d%H%M%S)"
 NVM_VERSION="v0.40.1"
+# Vendor repos below (terraform, docker-ce, postgresql) don't always have
+# builds for the newest Ubuntu codename the day it ships. These are the LTS
+# codenames to try falling back to, newest first, when a vendor 404s on the
+# real one — a given vendor may lag even the latest LTS, so more than one is
+# worth trying.
+LTS_FALLBACK_CODENAMES=("noble" "jammy" "focal")
+
+FAILED_REPOS=()
 
 log() { echo "==> $*"; }
+
+# Probes a vendor's dists/<codename>/... Release file; echoes the first
+# working codename (real one, else each fallback in turn).
+resolve_supported_codename() {
+  local url_template="$1" codename fallback
+  codename="$(lsb_release -cs)"
+  if curl -fsSL -o /dev/null "${url_template//\{codename\}/$codename}" 2>/dev/null; then
+    echo "$codename"
+    return 0
+  fi
+  for fallback in "${LTS_FALLBACK_CODENAMES[@]}"; do
+    if curl -fsSL -o /dev/null "${url_template//\{codename\}/$fallback}" 2>/dev/null; then
+      log "  no build for '$codename' yet at this vendor, falling back to '$fallback'" >&2
+      echo "$fallback"
+      return 0
+    fi
+  done
+  log "  no build for '$codename' or any fallback codename at this vendor; using '$codename' as-is (this will likely fail below, and get logged as skipped)" >&2
+  echo "$codename"
+}
 
 # Runs a state-changing command, or just prints it under --dry-run.
 run() {
@@ -83,7 +111,13 @@ sudo -v
 
 # curl/gnupg are needed by add_repo below to fetch and dearmor vendor keys;
 # stock Ubuntu desktop installs usually have them, server installs may not.
-run sudo apt-get update
+# Not fatal on failure: a vendor repo left over broken from a previous run
+# (e.g. a PPA with no build for this release yet) can already be registered
+# at this point, and this update only exists to unblock curl/gnupg, not to
+# fully refresh every repo — that happens again, and is handled, below.
+if ! run sudo apt-get update; then
+  log "WARNING: apt-get update reported errors this early — a previously-registered vendor repo is likely broken. Continuing to install curl/gnupg."
+fi
 run sudo apt-get install -y curl ca-certificates gnupg
 
 ### 2. Add vendor apt repos, then install everything from the Aptfile #########
@@ -99,8 +133,10 @@ add_repo() {
       ;;
     terraform)
       [ -f /etc/apt/sources.list.d/hashicorp.list ] && return 0
+      local codename
+      codename="$(resolve_supported_codename "https://apt.releases.hashicorp.com/dists/{codename}/Release")"
       run bash -o pipefail -c "curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg"
-      run bash -c "echo 'deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main' | sudo tee /etc/apt/sources.list.d/hashicorp.list >/dev/null"
+      run bash -c "echo 'deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${codename} main' | sudo tee /etc/apt/sources.list.d/hashicorp.list >/dev/null"
       ;;
     kubectl)
       [ -f /etc/apt/sources.list.d/kubernetes.list ] && return 0
@@ -109,8 +145,10 @@ add_repo() {
       ;;
     docker-ce)
       [ -f /etc/apt/sources.list.d/docker.list ] && return 0
+      local codename
+      codename="$(resolve_supported_codename "https://download.docker.com/linux/ubuntu/dists/{codename}/Release")"
       run bash -o pipefail -c "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg"
-      run bash -c "echo 'deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable' | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null"
+      run bash -c "echo 'deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu ${codename} stable' | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null"
       ;;
     google-cloud-cli)
       [ -f /etc/apt/sources.list.d/google-cloud-sdk.list ] && return 0
@@ -122,15 +160,12 @@ add_repo() {
       run bash -o pipefail -c "curl -fsSL https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/1password-archive-keyring.gpg"
       run bash -c "echo 'deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main' | sudo tee /etc/apt/sources.list.d/1password.list >/dev/null"
       ;;
-    mongodb-org)
-      [ -f /etc/apt/sources.list.d/mongodb-org.list ] && return 0
-      run bash -o pipefail -c "curl -fsSL https://pgp.mongodb.com/server-7.0.asc | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg"
-      run bash -c "echo 'deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org.list >/dev/null"
-      ;;
     postgresql)
       [ -f /etc/apt/sources.list.d/pgdg.list ] && return 0
+      local codename
+      codename="$(resolve_supported_codename "https://apt.postgresql.org/pub/repos/apt/dists/{codename}-pgdg/Release")"
       run bash -o pipefail -c "curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg"
-      run bash -c "echo 'deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main' | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null"
+      run bash -c "echo 'deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt.postgresql.org/pub/repos/apt ${codename}-pgdg main' | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null"
       ;;
     eza)
       [ -f /etc/apt/sources.list.d/eza.list ] && return 0
@@ -144,11 +179,6 @@ add_repo() {
     ulauncher)
       compgen -G "/etc/apt/sources.list.d/agornostal-ubuntu-ulauncher*.list" >/dev/null && return 0
       run sudo add-apt-repository -y ppa:agornostal/ulauncher
-      ;;
-    spotify)
-      [ -f /etc/apt/sources.list.d/spotify.list ] && return 0
-      run bash -o pipefail -c "curl -fsSL https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/spotify-archive-keyring.gpg"
-      run bash -c "echo 'deb [signed-by=/usr/share/keyrings/spotify-archive-keyring.gpg] http://repository.spotify.com stable non-free' | sudo tee /etc/apt/sources.list.d/spotify.list >/dev/null"
       ;;
     firefox)
       # Mozilla's own repo, not Ubuntu 24.04's default snap-transitional
@@ -253,7 +283,7 @@ while read -r kind name rest; do
   case "$kind" in
     ''|'#'*) continue ;;
     apt) APT_PACKAGES+=("$name") ;;
-    repo) add_repo "$name" ;;
+    repo) add_repo "$name" || { log "WARNING: failed to add repo '$name', skipping it"; FAILED_REPOS+=("$name"); } ;;
     deb) : ;; # installed after `apt-get update` below, once repos are registered
     binary) : ;;
     script) : ;;
@@ -263,13 +293,23 @@ while read -r kind name rest; do
 done < "$DOTFILES_DIR/Aptfile"
 
 log "apt-get update"
-run sudo apt-get update
+if ! run sudo apt-get update; then
+  log "WARNING: apt-get update reported errors — likely one of the vendor repos above doesn't support this Ubuntu release yet. Continuing with whatever package lists did refresh."
+fi
 
 log "Installing apt packages: ${APT_PACKAGES[*]}"
 if $DRY_RUN; then
   echo "  [dry-run] sudo apt-get install -y ${APT_PACKAGES[*]}"
 else
-  sudo apt-get install -y "${APT_PACKAGES[@]}"
+  # One-by-one, not a single batch install: a package from a repo that
+  # failed above (e.g. keyd's PPA has no build for this release yet) would
+  # otherwise fail the whole transaction and block every other package too.
+  for pkg in "${APT_PACKAGES[@]}"; do
+    if ! sudo apt-get install -y "$pkg"; then
+      log "WARNING: failed to install package '$pkg', skipping it"
+      FAILED_REPOS+=("$pkg (package)")
+    fi
+  done
 fi
 
 log "Installing vendor .deb packages, GitHub-release binaries, and install scripts"
@@ -342,20 +382,30 @@ run poetry config keyring.enabled false
 ### 4b. Docker group #############################################################
 
 # Without this, every docker command (including `docker login` below) needs
-# sudo. Takes effect on next login, not this shell.
+# sudo. Takes effect on next login, not this shell. The docker group only
+# exists once docker-ce's package actually installed, so guard against that
+# having failed above (e.g. its repo had no build for this release yet).
 if id -nG "$USER" 2>/dev/null | grep -qw docker; then
   log "skip (already in docker group): $USER"
-else
+elif getent group docker >/dev/null 2>&1; then
   run sudo usermod -aG docker "$USER"
+else
+  log "WARNING: docker group does not exist, skipping (docker-ce likely failed to install above)"
+  FAILED_REPOS+=("docker group setup (docker-ce not installed)")
 fi
 
 ### 5. keyd ########################################################################
 
-log "Installing keyd config"
-run sudo mkdir -p /etc/keyd
-run sudo cp "$DOTFILES_DIR/configs/keyd/default.conf" /etc/keyd/default.conf
-run sudo systemctl enable keyd
-run sudo systemctl restart keyd
+if dpkg -s keyd >/dev/null 2>&1; then
+  log "Installing keyd config"
+  run sudo mkdir -p /etc/keyd
+  run sudo cp "$DOTFILES_DIR/configs/keyd/default.conf" /etc/keyd/default.conf
+  run sudo systemctl enable keyd
+  run sudo systemctl restart keyd
+else
+  log "WARNING: keyd package not installed, skipping keyd config/service setup"
+  FAILED_REPOS+=("keyd (config/service skipped, package not installed)")
+fi
 
 ### 6. Summary ####################################################################
 # No chsh/default-shell step: Ubuntu's default new-user login shell is already
@@ -364,6 +414,13 @@ run sudo systemctl restart keyd
 DONE_SUFFIX=""
 if $DRY_RUN; then
   DONE_SUFFIX=" (dry run, nothing was changed)"
+fi
+
+if [ "${#FAILED_REPOS[@]}" -gt 0 ]; then
+  log "WARNING: the following failed and were skipped, everything else installed normally:"
+  for item in "${FAILED_REPOS[@]}"; do
+    echo "    - $item"
+  done
 fi
 
 cat <<EOF

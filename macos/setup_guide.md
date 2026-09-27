@@ -31,7 +31,7 @@ brew install git
 git --version
 ```
 
-Generate a new SSH key for this machine, with some identifier for this key locally and on GitHub.
+Generate a new SSH key for this machine, with some identifier for this key locally and on GitHub:
 
 ```sh
 KEY_LABEL="your_key_label"
